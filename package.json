@@ -1937,6 +1937,14 @@
                     "name": "Variables",
                     "when": "jupyter.hasNativeNotebookOrInteractiveWindowOpen"
                 }
+            ],
+            "jupyter-kernels-view": [
+                {
+                    "type": "tree",
+                    "id": "jupyterKernelsView",
+                    "name": "KernelsView",
+                    "when": "jupyter.hasKernels"
+                }
             ]
         },
         "debuggers": [
