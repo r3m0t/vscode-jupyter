@@ -336,8 +336,8 @@ jobs:
       fail-fast: false
       matrix:
         jupyter: [raw, local]
-        python: [nonConda, conda]
-        pythonVersion: ['3.9', '3.10']
+        python: [nonConda]
+        pythonVersion: ['3.9']
         # We're not running CI on macOS for now because it's one less matrix entry to lower the number of runners used,
         # macOS runners are expensive, and we assume that Ubuntu is enough to cover the UNIX case.
         os: [ubuntu-latest]
@@ -349,16 +349,6 @@ jobs:
             python: nonConda
             pythonVersion: '3.9'
             os: ubuntu-latest
-          - jupyter: raw
-            python: noPython
-            os: ubuntu-latest
-        exclude:
-          - python: conda  # Conda does't seem to support 3.10 yet.
-            pythonVersion: '3.10'
-        #   - pythonVersion: '3.9'
-        #     python: nonConda
-        #     jupyter: raw
-        #     os: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -591,13 +581,13 @@ jobs:
         id: test_notebook_vscode
         if: matrix.python != 'noPython'
 
-      - name: Publish Notebook Test Report
-        uses: scacap/action-surefire-report@v1
-        with:
-          github_token: ${{ secrets.TOKEN_TO_CREATE_RELEASE }}
-          report_paths: ${{ env.TEST_RESULTS_GLOB }}
-          check_name: Notebook Test Report ${{matrix.os}} ${{matrix.pythonVersion}} ${{matrix.python}} ${{matrix.jupyter}}
-        if: steps.test_notebook_vscode.outcome == 'failure' && failure()
+    #   - name: Publish Notebook Test Report
+    #     uses: scacap/action-surefire-report@v1
+    #     with:
+    #       github_token: ${{ secrets.TOKEN_TO_CREATE_RELEASE }}
+    #       report_paths: ${{ env.TEST_RESULTS_GLOB }}
+    #       check_name: Notebook Test Report ${{matrix.os}} ${{matrix.pythonVersion}} ${{matrix.python}} ${{matrix.jupyter}}
+    #     if: steps.test_notebook_vscode.outcome == 'failure' && failure()
 
       - name: Run Native Notebook with VSCode & Jupyter (without Python)
         uses: GabrielBB/xvfb-action@v1.4
@@ -611,13 +601,13 @@ jobs:
         id: test_notebookWithoutPythonExt_vscode
         if: matrix.python == 'noPython' && matrix.os != 'windows-latest'
 
-      - name: Publish Notebook Test Report
-        uses: scacap/action-surefire-report@v1
-        with:
-          github_token: ${{ secrets.TOKEN_TO_CREATE_RELEASE }}
-          report_paths: ${{ env.TEST_RESULTS_GLOB }}
-          check_name: Notebook without Python Test Report ${{matrix.os}} ${{matrix.pythonVersion}} ${{matrix.python}} ${{matrix.jupyter}}
-        if: steps.test_notebookWithoutPythonExt_vscode.outcome == 'failure' && failure()
+    #   - name: Publish Notebook Test Report
+    #     uses: scacap/action-surefire-report@v1
+    #     with:
+    #       github_token: ${{ secrets.TOKEN_TO_CREATE_RELEASE }}
+    #       report_paths: ${{ env.TEST_RESULTS_GLOB }}
+    #       check_name: Notebook without Python Test Report ${{matrix.os}} ${{matrix.pythonVersion}} ${{matrix.python}} ${{matrix.jupyter}}
+    #     if: steps.test_notebookWithoutPythonExt_vscode.outcome == 'failure' && failure()
 
       - name: Create coverage folder (if not created)
         run: npx gulp createNycFolder
@@ -666,7 +656,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
         python: [3.9]
     steps:
       - name: Checkout
