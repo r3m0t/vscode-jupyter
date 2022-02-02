@@ -274,6 +274,7 @@ export function getInterpreterFromKernelConnectionMetadata(
         : undefined;
     return kernelSpec?.metadata?.interpreter;
 }
+
 export function isPythonKernelConnection(kernelConnection?: KernelConnectionMetadata): boolean {
     if (!kernelConnection) {
         return false;

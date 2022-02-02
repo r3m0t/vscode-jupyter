@@ -37,7 +37,7 @@ import { getJupyterOutputChannel } from './datascience/devTools/jupyterOutputCha
 import { registerTypes as dataScienceRegisterTypes } from './datascience/serviceRegistry';
 import { IDataScience } from './datascience/types';
 import { IServiceContainer, IServiceManager } from './ioc/types';
-import { addOutputChannelLogging, setLoggingLevel } from './logging';
+import { addOutputChannelLogging, logError, logInfo, logVerbose, logWarning, setLoggingLevel } from './logging';
 import { registerLoggerTypes } from './logging/serviceRegistry';
 import { setExtensionInstallTelemetryProperties } from './telemetry/extensionInstallTelemetry';
 import { registerTypes as commonRegisterTerminalTypes } from './terminals/serviceRegistry';
@@ -140,6 +140,10 @@ async function activateLegacy(
     setLoggingLevel(settings.logging.level);
     settings.onDidChange(() => {
         setLoggingLevel(settings.logging.level);
+        logError("Error message", settings.logging.level);
+        logWarning("Warning message", settings.logging.level);
+        logInfo("Info message", settings.logging.level);
+        logVerbose("Verbose message", settings.logging.level);
     });
 
     // Register datascience types after experiments have loaded.

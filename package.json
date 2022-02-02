@@ -2085,8 +2085,8 @@
         "clean": "gulp clean",
         "updateBuildNumber": "gulp updateBuildNumber",
         "webpack": "webpack",
-        "download-api": "vscode-dts dev",
-        "postdownload-api": "vscode-dts main",
+        "download-api": "vscode-dts dev 1.64.0",
+        "postdownload-api": "vscode-dts main 1.64.0",
         "generateTelemetry": "gulp generateTelemetryMd"
     },
     "dependencies": {
