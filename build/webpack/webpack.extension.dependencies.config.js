@@ -16,7 +16,7 @@ const config = {
     target: 'node',
     context: constants.ExtensionRootDir,
     entry: entryItems,
-    devtool: 'source-map',
+    devtool: 'inline-source-map',
     node: {
         __dirname: false
     },
@@ -31,9 +31,42 @@ const config = {
                     }
                 ]
             },
-            { enforce: 'post', test: /unicode-properties[\/\\]index.js$/, loader: 'transform-loader?brfs' },
-            { enforce: 'post', test: /fontkit[\/\\]index.js$/, loader: 'transform-loader?brfs' },
-            { enforce: 'post', test: /linebreak[\/\\]src[\/\\]linebreaker.js/, loader: 'transform-loader?brfs' }
+            {
+                enforce: 'post',
+                test: /unicode-properties[\/\\]index.js$/,
+                use: [
+                    {
+                        loader: 'transform-loader',
+                        options: {
+                            brfs: true
+                        }
+                    }
+                ]
+            },
+            {
+                enforce: 'post',
+                test: /fontkit[\/\\]index.js$/,
+                use: [
+                    {
+                        loader: 'transform-loader',
+                        options: {
+                            brfs: true
+                        }
+                    }
+                ]
+            },
+            {
+                enforce: 'post',
+                test: /linebreak[\/\\]src[\/\\]linebreaker.js/,
+                use: [
+                    {
+                        loader: 'transform-loader',
+                        options: {
+                            brfs: true
+                        }
+                    }
+                ]
+            }
         ]
     },
     externals: ['vscode', 'commonjs'],
