@@ -42,7 +42,7 @@ const rules = [
 module.exports = [
     {
         mode: isProdBuild ? 'production' : 'development',
-        devtool: isProdBuild ? 'source-map' : 'inline-source-map',
+        devtool: 'inline-source-map',// isProdBuild ? 'source-map' : 'inline-source-map',
         entry: path.join(outDir, 'index.js'),
         cache: true,
         output: {
