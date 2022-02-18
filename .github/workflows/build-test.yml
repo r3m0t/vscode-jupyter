@@ -35,7 +35,7 @@ env:
   CACHE_PIP_DEPS: cache-pip
   VSC_JUPYTER_FORCE_LOGGING: 'true'
   VSC_PYTHON_FORCE_LOGGING: 'true'
-  VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 'true'
+#   VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 'true'
   # Key for the cache created at the end of the the 'Cache ./pythonFiles/lib/python' step.
   CACHE_PYTHONFILES: cache-pvsc-pythonFiles
   COVERAGE_REPORTS: tests-coverage-reports
@@ -331,13 +331,13 @@ jobs:
     env:
       VSC_FORCE_REAL_JUPYTER: 1
       VSC_PYTHON_FORCE_LOGGING: 1
-      VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
+    #   VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
     strategy:
       fail-fast: false
       matrix:
         jupyter: [raw, local]
-        python: [nonConda, conda]
-        pythonVersion: ['3.9', '3.10']
+        python: [nonConda]
+        pythonVersion: ['3.7']
         # We're not running CI on macOS for now because it's one less matrix entry to lower the number of runners used,
         # macOS runners are expensive, and we assume that Ubuntu is enough to cover the UNIX case.
         os: [ubuntu-latest]
@@ -349,13 +349,21 @@ jobs:
             python: nonConda
             pythonVersion: '3.9'
             os: ubuntu-latest
-          - jupyter: raw
-            python: noPython
+        #   - jupyter: raw
+        #     python: noPython
+        #     os: ubuntu-latest
+          - jupyter: local # We don't care how remote is started (we only want to test connecting to it)
+            python: nonConda
+            pythonVersion: '3.9'
             os: ubuntu-latest
           - os: windows-latest
             python: nonConda
-            pythonVersion: '3.10'
+            pythonVersion: '3.9'
             jupyter: raw
+          - jupyter: local
+            python: nonConda
+            pythonVersion: '3.10'
+            os: ubuntu-latest
         exclude:
           - python: conda # Conda does't seem to support 3.10 yet.
             pythonVersion: '3.10'
@@ -524,37 +532,37 @@ jobs:
         env:
           CI_JUPYTER_FAST_COMPILATION: 'true'
 
-      # Used by tests for non-python kernels.
-      # Test are enabled via env variable `VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST`
-      - name: Install Julia
-        if: matrix.os != 'windows-latest'
-        uses: julia-actions/setup-julia@v1
-        with:
-          version: ${{env.JULIA_VERSION}}
+    #   # Used by tests for non-python kernels.
+    #   # Test are enabled via env variable `VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST`
+    #   - name: Install Julia
+    #     if: matrix.os != 'windows-latest'
+    #     uses: julia-actions/setup-julia@v1
+    #     with:
+    #       version: ${{env.JULIA_VERSION}}
 
-      - name: Install Julia Kernel
-        if: matrix.os != 'windows-latest'
-        shell: bash
-        run: |
-          julia -e '
-            using Pkg
-            Pkg.add("IJulia")'
+    #   - name: Install Julia Kernel
+    #     if: matrix.os != 'windows-latest'
+    #     shell: bash
+    #     run: |
+    #       julia -e '
+    #         using Pkg
+    #         Pkg.add("IJulia")'
 
-      - name: Install Dot.net
-        if: matrix.os != 'windows-latest'
-        uses: actions/setup-dotnet@v1.8.0
-        with:
-          dotnet-version: ${{env.DOTNET_VERSION}}
+    #   - name: Install Dot.net
+    #     if: matrix.os != 'windows-latest'
+    #     uses: actions/setup-dotnet@v1.8.0
+    #     with:
+    #       dotnet-version: ${{env.DOTNET_VERSION}}
 
-      - name: Install .NET Interactive
-        if: matrix.os != 'windows-latest'
-        shell: bash -l {0}
-        run: dotnet tool install -g --add-source "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json" Microsoft.dotnet-interactive
+    #   - name: Install .NET Interactive
+    #     if: matrix.os != 'windows-latest'
+    #     shell: bash -l {0}
+    #     run: dotnet tool install -g --add-source "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json" Microsoft.dotnet-interactive
 
-      - name: Install .NET Kernel
-        if: matrix.os != 'windows-latest'
-        shell: bash -l {0}
-        run: dotnet interactive jupyter install
+    #   - name: Install .NET Kernel
+    #     if: matrix.os != 'windows-latest'
+    #     shell: bash -l {0}
+    #     run: dotnet interactive jupyter install
 
       - name: Create Virtual Env for Tests
         uses: ./.github/actions/create-venv-for-tests
@@ -589,7 +597,7 @@ jobs:
           VSC_FORCE_REAL_JUPYTER: 1
           VSC_JUPYTER_FORCE_LOGGING: 1
           VSC_PYTHON_FORCE_LOGGING: 1
-          VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
+        #   VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
           VSC_JUPYTER_REMOTE_NATIVE_TEST: ${{ matrix.jupyter == 'remote' }}
           VSC_JUPYTER_NON_RAW_NATIVE_TEST: ${{ matrix.jupyter == 'local' }}
           VSC_JUPYTER_CI_RUN_JAVA_NB_TEST: ${{ matrix.python == 'conda' }}
@@ -604,7 +612,7 @@ jobs:
           VSC_FORCE_REAL_JUPYTER: 1
           VSC_JUPYTER_FORCE_LOGGING: 1
           VSC_PYTHON_FORCE_LOGGING: 1
-          VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
+        #   VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
           VSC_JUPYTER_REMOTE_NATIVE_TEST: ${{ matrix.jupyter == 'remote' }}
           VSC_JUPYTER_NON_RAW_NATIVE_TEST: ${{ matrix.jupyter == 'local' }}
           VSC_JUPYTER_CI_RUN_JAVA_NB_TEST: ${{ matrix.python == 'conda' }}
@@ -629,7 +637,7 @@ jobs:
         env:
           VSC_FORCE_REAL_JUPYTER: 1
           VSC_JUPYTER_FORCE_LOGGING: 1
-          VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
+        #   VSC_JUPYTER_CI_RUN_NON_PYTHON_NB_TEST: 1
           VSC_JUPYTER_CI_TEST_VSC_CHANNEL: 'insiders'
         id: test_notebookWithoutPythonExt_vscode
         if: matrix.python == 'noPython' && matrix.os != 'windows-latest'
@@ -690,7 +698,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python: [3.9]
+        python: ['3.7']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
