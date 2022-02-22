@@ -6,6 +6,8 @@
 import { inject, injectable } from 'inversify';
 import { IPythonExtensionChecker } from '../../api/types';
 import { IConfigurationService } from '../../common/types';
+import { traceDecorators } from '../../logging';
+import { TraceOptions } from '../../logging/trace';
 import { Settings, Telemetry } from '../constants';
 import { DisplayOptions } from '../displayOptions';
 import { isLocalConnection } from '../jupyter/kernels/types';
@@ -31,6 +33,7 @@ export class NotebookProvider implements INotebookProvider {
     ) {}
 
     // Attempt to connect to our server provider, and if we do, return the connection info
+    @traceDecorators.verbose("NotebookProvider.connect", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     public async connect(options: ConnectNotebookProviderOptions): Promise<INotebookProviderConnection | undefined> {
         const settings = this.configService.getSettings(undefined);
         const serverType: string | undefined = settings.jupyterServerType;
@@ -55,6 +58,7 @@ export class NotebookProvider implements INotebookProvider {
             await this.extensionChecker.showPythonExtensionInstallRequiredPrompt();
         }
     }
+    @traceDecorators.verbose("NotebookProvider.createNotebook", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     public async createNotebook(options: NotebookCreationOptions): Promise<INotebook | undefined> {
         const isLocal = isLocalConnection(options.kernelConnection);
         const rawLocalKernel = this.rawNotebookProvider.isSupported && isLocal;

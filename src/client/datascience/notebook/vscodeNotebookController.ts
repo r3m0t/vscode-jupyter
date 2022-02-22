@@ -216,6 +216,7 @@ export class VSCodeNotebookController implements Disposable {
         traceInfo(`Execute Cells request ${cells.map((cell) => cell.index).join(', ')}`);
         await Promise.all(cells.map((cell) => this.executeCell(notebook, cell)));
     }
+    @traceDecorators.verbose("VSCodeNotebookController.warnWhenUsingOutdatedPython", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     private warnWhenUsingOutdatedPython() {
         const pyVersion = this.kernelConnection.interpreter?.version;
         if (
@@ -241,6 +242,7 @@ export class VSCodeNotebookController implements Disposable {
                 });
         }
     }
+    @traceDecorators.verbose("VSCodeNotebookController.onDidChangeSelectedNotebooks", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     private async onDidChangeSelectedNotebooks(event: { notebook: NotebookDocument; selected: boolean }) {
         traceInfoIfCI(
             `NotebookController selection event called for notebook ${event.notebook.uri.toString()} & controller ${
@@ -304,7 +306,8 @@ export class VSCodeNotebookController implements Disposable {
      * User gets errors in output & realizes mistake & changes the kernel.
      * Now user runs a cell & nothing happens again.
      */
-    private async updateCellLanguages(notebook: NotebookDocument) {
+     @traceDecorators.verbose("VSCodeNotebookController.updateCellLanguages", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+     private async updateCellLanguages(notebook: NotebookDocument) {
         const supportedLanguages = this.controller.supportedLanguages;
         // If the controller doesn't have any preferred languages, then get out.
         if (!supportedLanguages || supportedLanguages?.length === 0) {
@@ -361,6 +364,7 @@ export class VSCodeNotebookController implements Disposable {
         return kernel.executeCell(cell);
     }
 
+    @traceDecorators.verbose("VSCodeNotebookController.updateKernelInfoInNotebookWhenAvailable", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     private updateKernelInfoInNotebookWhenAvailable(kernel: IKernel, doc: NotebookDocument) {
         if (this.notebookKernels.get(doc) === kernel) {
             return;
@@ -425,6 +429,8 @@ export class VSCodeNotebookController implements Disposable {
         handlerDisposables.push({ dispose: () => statusChangeDisposable.dispose() });
         handlerDisposables.push({ dispose: () => kernelDisposedDisposable?.dispose() });
     }
+
+    @traceDecorators.verbose("VSCodeNotebookController.onDidSelectController", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     private async onDidSelectController(document: NotebookDocument) {
         const selectedKernelConnectionMetadata = this.connection;
         const existingKernel = this.kernelProvider.get(document);

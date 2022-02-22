@@ -60,6 +60,7 @@ import { getDisplayPath } from '../../common/platform/fs-paths';
 import { DisplayOptions } from '../displayOptions';
 import { JupyterServerSelector } from '../jupyter/serverSelector';
 import { DataScience } from '../../common/utils/localize';
+import { TraceOptions } from '../../logging/trace';
 
 /**
  * This class tracks notebook documents that are open and the provides NotebookControllers for
@@ -436,6 +437,7 @@ export class NotebookControllerManager implements INotebookControllerManager, IE
         this.kernelProvider.onDidDisposeKernel(refreshRemoteKernels, this, this.disposables);
     }
     // When a document is opened we need to look for a preferred kernel for it
+    @traceDecorators.verbose("NotebookContollerManager.onDidOpenNotebookDocument", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     private async onDidOpenNotebookDocument(document: NotebookDocument) {
         // Restrict to only our notebook documents
         if (

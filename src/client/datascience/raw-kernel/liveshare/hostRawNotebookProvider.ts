@@ -8,7 +8,7 @@ import { CancellationToken } from 'vscode-jsonrpc';
 
 import { IPythonExtensionChecker } from '../../../api/types';
 import { IWorkspaceService } from '../../../common/application/types';
-import { traceError, traceInfo, traceVerbose } from '../../../common/logger';
+import { traceDecorators, traceError, traceInfo, traceVerbose } from '../../../common/logger';
 import {
     IAsyncDisposableRegistry,
     IConfigurationService,
@@ -40,6 +40,7 @@ import { STANDARD_OUTPUT_CHANNEL } from '../../../common/constants';
 import { getDisplayPath } from '../../../common/platform/fs-paths';
 import { JupyterNotebook } from '../../jupyter/jupyterNotebook';
 import * as uuid from 'uuid/v4';
+import { TraceOptions } from '../../../logging/trace';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -92,6 +93,8 @@ export class HostRawNotebookProvider implements IRawNotebookProvider {
     }
 
     @captureTelemetry(Telemetry.RawKernelCreatingNotebook, undefined, true)
+    @traceDecorators.verbose("HostRawNotebookProvider.createNotebook", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+
     public async createNotebook(
         document: vscode.NotebookDocument,
         resource: Resource,

@@ -25,7 +25,7 @@ import { IPythonExtensionChecker } from '../../api/types';
 import { ICommandManager, IDocumentManager, IWorkspaceService } from '../../common/application/types';
 import { JVSC_EXTENSION_ID, MARKDOWN_LANGUAGE, PYTHON_LANGUAGE } from '../../common/constants';
 import '../../common/extensions';
-import { traceInfo, traceInfoIfCI } from '../../common/logger';
+import { traceDecorators, traceInfo, traceInfoIfCI } from '../../common/logger';
 import { IFileSystem } from '../../common/platform/types';
 import * as uuid from 'uuid/v4';
 
@@ -50,6 +50,7 @@ import { initializeInteractiveOrNotebookTelemetryBasedOnUserAction } from '../te
 import { InteractiveWindowView } from '../notebook/constants';
 import { chainable } from '../../common/utils/decorators';
 import { InteractiveCellResultError } from '../errors/interactiveCellResultError';
+import { TraceOptions } from '../../logging/trace';
 
 type InteractiveCellMetadata = {
     interactiveWindowCellMarker: string;
@@ -149,6 +150,7 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         this.cellMatcher = new CellMatcher(this.configuration.getSettings(this.owningResource));
     }
 
+    @traceDecorators.verbose("InteractiveWindow.createKernelReadyPromise", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
     private async createKernelReadyPromise(): Promise<IKernel> {
         const editor = await this._editorReadyPromise;
         const controller = await this._controllerReadyPromise.promise;
@@ -176,6 +178,8 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         return kernel;
     }
 
+    @traceDecorators.verbose("InteractiveWindow.ensureKernelReadyPromise", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+
     private ensureKernelReadyPromise() {
         if (!this._kernelReadyPromise) {
             const readyPromise = this.createKernelReadyPromise();
@@ -190,6 +194,8 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
             });
         }
     }
+
+    @traceDecorators.verbose("InteractiveWindow.createEditorReadyPromise", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
 
     private async createEditorReadyPromise(): Promise<NotebookEditor> {
         const preferredController = await this.notebookControllerManager.getActiveInterpreterOrDefaultController(
@@ -460,6 +466,8 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         }
         return result;
     }
+    @traceDecorators.verbose("InteractiveWindow.runIntialization", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+
     private async runIntialization(kernel: IKernel, fileUri: Resource) {
         if (!fileUri) {
             traceInfoIfCI('Unable to run initialization for IW');
