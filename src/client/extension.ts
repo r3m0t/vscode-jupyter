@@ -78,8 +78,12 @@ export async function activate(context: IExtensionContext): Promise<IExtensionAp
             registerRemoteServerProvider: noop,
             showDataViewer: () => Promise.resolve(),
             getKernelService: () => Promise.resolve(undefined),
-            getServiceContainer: () => { throw new Error() },
-            getServiceManager: () => { throw new Error() },
+            getServiceContainer: () => {
+                throw new Error();
+            },
+            getServiceManager: () => {
+                throw new Error();
+            }
         };
     }
 }

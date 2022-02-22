@@ -437,7 +437,10 @@ export class NotebookControllerManager implements INotebookControllerManager, IE
         this.kernelProvider.onDidDisposeKernel(refreshRemoteKernels, this, this.disposables);
     }
     // When a document is opened we need to look for a preferred kernel for it
-    @traceDecorators.verbose("NotebookContollerManager.onDidOpenNotebookDocument", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+    @traceDecorators.verbose(
+        'NotebookContollerManager.onDidOpenNotebookDocument',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     private async onDidOpenNotebookDocument(document: NotebookDocument) {
         // Restrict to only our notebook documents
         if (

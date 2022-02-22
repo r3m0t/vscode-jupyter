@@ -93,8 +93,10 @@ export class HostRawNotebookProvider implements IRawNotebookProvider {
     }
 
     @captureTelemetry(Telemetry.RawKernelCreatingNotebook, undefined, true)
-    @traceDecorators.verbose("HostRawNotebookProvider.createNotebook", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
-
+    @traceDecorators.verbose(
+        'HostRawNotebookProvider.createNotebook',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     public async createNotebook(
         document: vscode.NotebookDocument,
         resource: Resource,

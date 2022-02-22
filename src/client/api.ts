@@ -97,7 +97,7 @@ export function buildApi(
         },
         getServiceContainer: () => {
             return serviceContainer;
-        },
+        }
     };
 
     // In test/dev environment return the DI Container.

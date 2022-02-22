@@ -43,7 +43,10 @@ export class JupyterSessionManagerFactory implements IJupyterSessionManagerFacto
      * @param connInfo - connection information to the server that's already running.
      * @param failOnPassword - whether or not to fail the creation if a password is required.
      */
-    @traceDecorators.verbose("JupyterSessionManagerFactory.create", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+    @traceDecorators.verbose(
+        'JupyterSessionManagerFactory.create',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     public async create(connInfo: IJupyterConnection, failOnPassword?: boolean): Promise<IJupyterSessionManager> {
         const result = new JupyterSessionManager(
             this.jupyterPasswordConnect,

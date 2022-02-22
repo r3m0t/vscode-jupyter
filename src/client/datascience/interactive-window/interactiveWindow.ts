@@ -150,7 +150,10 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         this.cellMatcher = new CellMatcher(this.configuration.getSettings(this.owningResource));
     }
 
-    @traceDecorators.verbose("InteractiveWindow.createKernelReadyPromise", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
+    @traceDecorators.verbose(
+        'InteractiveWindow.createKernelReadyPromise',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     private async createKernelReadyPromise(): Promise<IKernel> {
         const editor = await this._editorReadyPromise;
         const controller = await this._controllerReadyPromise.promise;
@@ -178,8 +181,10 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         return kernel;
     }
 
-    @traceDecorators.verbose("InteractiveWindow.ensureKernelReadyPromise", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
-
+    @traceDecorators.verbose(
+        'InteractiveWindow.ensureKernelReadyPromise',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     private ensureKernelReadyPromise() {
         if (!this._kernelReadyPromise) {
             const readyPromise = this.createKernelReadyPromise();
@@ -195,8 +200,10 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         }
     }
 
-    @traceDecorators.verbose("InteractiveWindow.createEditorReadyPromise", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
-
+    @traceDecorators.verbose(
+        'InteractiveWindow.createEditorReadyPromise',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     private async createEditorReadyPromise(): Promise<NotebookEditor> {
         const preferredController = await this.notebookControllerManager.getActiveInterpreterOrDefaultController(
             InteractiveWindowView,
@@ -466,8 +473,10 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         }
         return result;
     }
-    @traceDecorators.verbose("InteractiveWindow.runIntialization", TraceOptions.Arguments|TraceOptions.BeforeCall|TraceOptions.ReturnValue)
-
+    @traceDecorators.verbose(
+        'InteractiveWindow.runIntialization',
+        TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
+    )
     private async runIntialization(kernel: IKernel, fileUri: Resource) {
         if (!fileUri) {
             traceInfoIfCI('Unable to run initialization for IW');
