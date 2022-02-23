@@ -513,6 +513,7 @@ export class VSCodeNotebookController implements Disposable {
         });
         traceInfo(`KernelProvider switched kernel to id = ${newKernel.kernelConnectionMetadata.id}`);
 
+        traceInfo(`VSCodeNotebookController - isPythonKernelConnection:${isPythonKernelConnection(this.kernelConnection)} / extnesionChecker: ${this.extensionChecker.isPythonExtensionInstalled}/${this.extensionChecker.isPythonExtensionActive}/disableJupyterAutoStart:${this.configuration.getSettings(undefined).disableJupyterAutoStart}/isLocal:${isLocalConnection(this.kernelConnection)}`);
         // If this is a Python notebook and Python isn't installed, then don't auto-start the kernel.
         if (isPythonKernelConnection(this.kernelConnection) && !this.extensionChecker.isPythonExtensionInstalled) {
             return;

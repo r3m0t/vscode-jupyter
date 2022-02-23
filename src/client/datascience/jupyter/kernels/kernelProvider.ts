@@ -99,6 +99,7 @@ export class KernelProvider implements IKernelProvider {
     public getOrCreate(notebook: NotebookDocument, options: KernelOptions): IKernel {
         const existingKernelInfo = this.kernelsByNotebook.get(notebook);
         if (existingKernelInfo && existingKernelInfo.options.metadata.id === options.metadata.id) {
+            traceVerbose(`Got existing kernel for notebook ${notebook.uri} - ${options.metadata.id}`);
             return existingKernelInfo.kernel;
         }
         const resourceUri = notebook.notebookType === InteractiveWindowView ? options.resourceUri : notebook.uri;
@@ -139,6 +140,7 @@ export class KernelProvider implements IKernelProvider {
         this.asyncDisposables.push(kernel);
         this.kernelsByNotebook.set(notebook, { options, kernel });
         this.deleteMappingIfKernelIsDisposed(notebook, kernel);
+        traceVerbose(`Created kernel for notebook ${resourceUri} - ${options.metadata.id}`);
         return kernel;
     }
     /**

@@ -156,13 +156,17 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
     )
     private async createKernelReadyPromise(): Promise<IKernel> {
         const editor = await this._editorReadyPromise;
+        traceInfo("kernelReadyPromise - got editor");
         const controller = await this._controllerReadyPromise.promise;
+        traceInfo("kernelReadyPromise - got controller");
         initializeInteractiveOrNotebookTelemetryBasedOnUserAction(this.owner, controller.connection);
+        traceInfo("kernelReadyPromise - inited telemetry");
         const kernel = this.kernelProvider.getOrCreate(editor.document, {
             metadata: controller.connection,
             controller: controller.controller,
             resourceUri: this.owner
         });
+        traceInfo("kernelReadyPromise - got kernel");
         kernel.onRestarted(
             async () => {
                 traceInfoIfCI('Restart event handled in IW');
@@ -175,9 +179,12 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
             this.internalDisposables
         );
         this.internalDisposables.push(kernel);
+        traceInfo("kernelReadyPromise - starting kernel...");
         await kernel.start();
+        traceInfo("kernelReadyPromise - started kernel");
         this.fileInKernel = undefined;
         await this.runIntialization(kernel, this.owner);
+        traceInfo("kernelReadyPromise - did runIntialization");
         return kernel;
     }
 
@@ -194,6 +201,7 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
                 // 1. Opts to change the kernel, in which this promise will be replaced for the newer kernel - Don't do anything.
                 // 2. Opts to cancel the install - Clear the promise so that we will retry when another cell is run.
                 if (this._kernelReadyPromise === readyPromise) {
+                    traceInfo("kernelReadyPromise race condition");
                     this._kernelReadyPromise = undefined;
                 }
             });
@@ -220,6 +228,7 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
             controllerId,
             this.owner && this.mode === 'perFile' ? getInteractiveWindowTitle(this.owner) : undefined
         )) as unknown) as INativeInteractiveWindow;
+        traceInfo(`Starting interactive window- got INativeInteractiveWindow`);
         if (!notebookEditor) {
             // This means VS Code failed to create an interactive window.
             // This should never happen.
@@ -236,11 +245,13 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
             })
         );
 
+        traceInfo(`Starting interactive window- subbed`);
         if (window.activeNotebookEditor === this._notebookEditor) {
             this._onDidChangeViewState.fire();
         }
 
         this.listenForControllerSelection(notebookEditor.document);
+        traceInfo(`Starting interactive window- listenedforcontrollerselection - editor READY`);
         return notebookEditor;
     }
 
@@ -278,6 +289,7 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
                 this._controllerReadyPromise.resolve(e.controller);
 
                 // Recreate the kernel ready promise now that we have a new controller
+                traceInfo("resetting kernelReadyPromise");
                 this._kernelReadyPromise = undefined;
                 this.ensureKernelReadyPromise();
             },
