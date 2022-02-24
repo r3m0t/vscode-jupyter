@@ -25,7 +25,7 @@ import { IPythonExtensionChecker } from '../../api/types';
 import { ICommandManager, IDocumentManager, IWorkspaceService } from '../../common/application/types';
 import { JVSC_EXTENSION_ID, MARKDOWN_LANGUAGE, PYTHON_LANGUAGE } from '../../common/constants';
 import '../../common/extensions';
-import { traceDecorators, traceInfo, traceInfoIfCI } from '../../common/logger';
+import { traceDecorators, traceError, traceInfo, traceInfoIfCI } from '../../common/logger';
 import { IFileSystem } from '../../common/platform/types';
 import * as uuid from 'uuid/v4';
 
@@ -155,37 +155,42 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
     )
     private async createKernelReadyPromise(): Promise<IKernel> {
-        const editor = await this._editorReadyPromise;
-        traceInfo("kernelReadyPromise - got editor");
-        const controller = await this._controllerReadyPromise.promise;
-        traceInfo("kernelReadyPromise - got controller");
-        initializeInteractiveOrNotebookTelemetryBasedOnUserAction(this.owner, controller.connection);
-        traceInfo("kernelReadyPromise - inited telemetry");
-        const kernel = this.kernelProvider.getOrCreate(editor.document, {
-            metadata: controller.connection,
-            controller: controller.controller,
-            resourceUri: this.owner
-        });
-        traceInfo("kernelReadyPromise - got kernel");
-        kernel.onRestarted(
-            async () => {
-                traceInfoIfCI('Restart event handled in IW');
-                this.fileInKernel = undefined;
-                const promise = this.runIntialization(kernel, this.owner);
-                this._kernelReadyPromise = promise.then(() => kernel);
-                await promise;
-            },
-            this,
-            this.internalDisposables
-        );
-        this.internalDisposables.push(kernel);
-        traceInfo("kernelReadyPromise - starting kernel...");
-        await kernel.start();
-        traceInfo("kernelReadyPromise - started kernel");
-        this.fileInKernel = undefined;
-        await this.runIntialization(kernel, this.owner);
-        traceInfo("kernelReadyPromise - did runIntialization");
-        return kernel;
+        try {
+            const editor = await this._editorReadyPromise;
+            traceInfo("kernelReadyPromise - got editor");
+            const controller = await this._controllerReadyPromise.promise;
+            traceInfo("kernelReadyPromise - got controller");
+            initializeInteractiveOrNotebookTelemetryBasedOnUserAction(this.owner, controller.connection);
+            traceInfo("kernelReadyPromise - inited telemetry");
+            const kernel = this.kernelProvider.getOrCreate(editor.document, {
+                metadata: controller.connection,
+                controller: controller.controller,
+                resourceUri: this.owner
+            });
+            traceInfo("kernelReadyPromise - got kernel");
+            kernel.onRestarted(
+                async () => {
+                    traceInfoIfCI('Restart event handled in IW');
+                    this.fileInKernel = undefined;
+                    const promise = this.runIntialization(kernel, this.owner);
+                    this._kernelReadyPromise = promise.then(() => kernel);
+                    await promise;
+                },
+                this,
+                this.internalDisposables
+            );
+            this.internalDisposables.push(kernel);
+            traceInfo("kernelReadyPromise - starting kernel...");
+            await kernel.start();
+            traceInfo("kernelReadyPromise - started kernel");
+            this.fileInKernel = undefined;
+            await this.runIntialization(kernel, this.owner);
+            traceInfo("kernelReadyPromise - did runIntialization");
+            return kernel;
+        } catch (e) {
+            traceError("kernelReadyPromise error: ", e);
+            throw e;
+        }
     }
 
     @traceDecorators.verbose(
@@ -213,46 +218,51 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue
     )
     private async createEditorReadyPromise(): Promise<NotebookEditor> {
-        const preferredController = await this.notebookControllerManager.getActiveInterpreterOrDefaultController(
-            InteractiveWindowView,
-            this.owner
-        );
-        const controllerId = preferredController ? `${JVSC_EXTENSION_ID}/${preferredController.id}` : undefined;
-        traceInfo(`Starting interactive window with controller ID ${controllerId}`);
-        const hasOwningFile = this.owner !== undefined;
-        const { inputUri, notebookEditor } = ((await this.commandManager.executeCommand(
-            'interactive.open',
-            // Keep focus on the owning file if there is one
-            { viewColumn: ViewColumn.Beside, preserveFocus: hasOwningFile },
-            undefined,
-            controllerId,
-            this.owner && this.mode === 'perFile' ? getInteractiveWindowTitle(this.owner) : undefined
-        )) as unknown) as INativeInteractiveWindow;
-        traceInfo(`Starting interactive window- got INativeInteractiveWindow`);
-        if (!notebookEditor) {
-            // This means VS Code failed to create an interactive window.
-            // This should never happen.
-            throw new Error('Failed to request creation of interactive window from VS Code.');
-        }
-        this._notebookEditor = notebookEditor;
-        this._notebookDocument = notebookEditor.document;
-        this._inputUri = inputUri;
-        this.internalDisposables.push(
-            window.onDidChangeActiveNotebookEditor((e) => {
-                if (e === this._notebookEditor) {
-                    this._onDidChangeViewState.fire();
-                }
-            })
-        );
+        try {
+            const preferredController = await this.notebookControllerManager.getActiveInterpreterOrDefaultController(
+                InteractiveWindowView,
+                this.owner
+            );
+            const controllerId = preferredController ? `${JVSC_EXTENSION_ID}/${preferredController.id}` : undefined;
+            traceInfo(`Starting interactive window with controller ID ${controllerId}`);
+            const hasOwningFile = this.owner !== undefined;
+            const { inputUri, notebookEditor } = ((await this.commandManager.executeCommand(
+                'interactive.open',
+                // Keep focus on the owning file if there is one
+                { viewColumn: ViewColumn.Beside, preserveFocus: hasOwningFile },
+                undefined,
+                controllerId,
+                this.owner && this.mode === 'perFile' ? getInteractiveWindowTitle(this.owner) : undefined
+            )) as unknown) as INativeInteractiveWindow;
+            traceInfo(`Starting interactive window- got INativeInteractiveWindow`);
+            if (!notebookEditor) {
+                // This means VS Code failed to create an interactive window.6
+                // This should never happen.
+                throw new Error('Failed to request creation of interactive window from VS Code.');
+            }
+            this._notebookEditor = notebookEditor;
+            this._notebookDocument = notebookEditor.document;
+            this._inputUri = inputUri;
+            this.internalDisposables.push(
+                window.onDidChangeActiveNotebookEditor((e) => {
+                    if (e === this._notebookEditor) {
+                        this._onDidChangeViewState.fire();
+                    }
+                })
+            );
 
-        traceInfo(`Starting interactive window- subbed`);
-        if (window.activeNotebookEditor === this._notebookEditor) {
-            this._onDidChangeViewState.fire();
-        }
+            traceInfo(`Starting interactive window- subbed`);
+            if (window.activeNotebookEditor === this._notebookEditor) {
+                this._onDidChangeViewState.fire();
+            }
 
-        this.listenForControllerSelection(notebookEditor.document);
-        traceInfo(`Starting interactive window- listenedforcontrollerselection - editor READY`);
-        return notebookEditor;
+            this.listenForControllerSelection(notebookEditor.document);
+            traceInfo(`Starting interactive window- listenedforcontrollerselection - editor READY`);
+            return notebookEditor;
+        } catch (e) {
+            traceError("editorReadyPromise reject: ", e);
+            throw e;
+        }
     }
 
     private registerControllerChangeListener(controller: VSCodeNotebookController, notebookDocument: NotebookDocument) {
@@ -543,9 +553,9 @@ export class InteractiveWindow implements IInteractiveWindowLoadable {
         this.pendingNotebookScrolls.push(notebookRange);
         const decorationType = useDecoration
             ? notebooks.createNotebookEditorDecorationType({
-                  backgroundColor: new ThemeColor('peekViewEditor.background'),
-                  top: {}
-              })
+                backgroundColor: new ThemeColor('peekViewEditor.background'),
+                top: {}
+            })
             : undefined;
         // This will always try to reveal the whole cell--input + output combined
         setTimeout(() => {

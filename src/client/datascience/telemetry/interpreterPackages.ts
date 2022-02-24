@@ -4,6 +4,7 @@
 import { inject, injectable } from 'inversify';
 import { IPythonApiProvider, IPythonExtensionChecker } from '../../api/types';
 import { InterpreterUri } from '../../common/installer/types';
+import { traceVerbose } from '../../common/logger';
 import { IPythonExecutionFactory } from '../../common/process/types';
 import { IDisposableRegistry } from '../../common/types';
 import { createDeferred, Deferred } from '../../common/utils/async';
@@ -120,13 +121,16 @@ export class InterpreterPackages {
         InterpreterPackages.pendingInterpreterInformation.set(key, promise);
     }
     private async getPackageInformation(interpreter: PythonEnvironment) {
+        traceVerbose(`getPackageInformation ${interpreter.displayName} - began`);
         const service = await this.executionFactory.createActivatedEnvironment({
             allowEnvironmentFetchExceptions: true,
             interpreter
         });
+        traceVerbose(`getPackageInformation ${interpreter.displayName}- createactivatedenvironment done`);
 
         // Ignore errors, and merge the two (in case some versions of python write to stderr).
         const output = await service.execModule('pip', ['list'], { throwOnStdErr: false, mergeStdOutErr: true });
+        traceVerbose(`getPackageInformation ${interpreter.displayName}- retrieved pip list`);
         const packageAndVersions = new Map<string, string>();
         // Add defaults.
         interestedPackages.forEach((item) => {
@@ -153,6 +157,7 @@ export class InterpreterPackages {
             deferred = createDeferred<Map<string, string>>();
             InterpreterPackages.interpreterInformation.set(interpreter.path, deferred);
         }
+        traceVerbose(`getPackageInformation ${interpreter.displayName}- resolving deferred`);
         deferred.resolve(packageAndVersions);
     }
 }
