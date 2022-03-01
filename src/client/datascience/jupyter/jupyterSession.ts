@@ -33,7 +33,7 @@ import { CancellationTokenSource } from 'vscode';
 
 const jvscIdentifier = '-jvsc-';
 function getRemoteIPynbSuffix(): string {
-    return `${jvscIdentifier}${uuid()}`;
+    return `${jvscIdentifier}${uuid().substring(0, 11)}`;
 }
 
 /**
@@ -215,7 +215,7 @@ export class JupyterSession extends BaseJupyterSession {
         // Generate a more descriptive name
         const newName = this.resource
             ? `${path.basename(this.resource.fsPath, '.ipynb')}${getRemoteIPynbSuffix()}.ipynb`
-            : `${DataScience.defaultNotebookName()}-${uuid()}.ipynb`;
+            : `${DataScience.defaultNotebookName()}-${uuid().substring(0, 12)}.ipynb`;
 
         try {
             // Create a temporary notebook for this session. Each needs a unique name (otherwise we get the same session every time)
@@ -281,11 +281,11 @@ export class JupyterSession extends BaseJupyterSession {
 
         // Create our session options using this temporary notebook and our connection info
         const sessionOptions: Session.ISessionOptions = {
-            path: backingFile?.path || `${uuid()}.ipynb`, // Name has to be unique
+            path: backingFile?.path || `${uuid().substring(0, 13)}.ipynb`, // Name has to be unique
             kernel: {
                 name: kernelName
             },
-            name: uuid(), // This is crucial to distinguish this session from any other.
+            name: uuid().substring(0, 14), // This is crucial to distinguish this session from any other.
             type: 'notebook'
         };
 

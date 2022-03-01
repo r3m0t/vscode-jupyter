@@ -193,6 +193,7 @@ export class VSCodeNotebookController implements Disposable {
         }
     }
 
+    @traceDecorators.verbose("VSCodeNotebookController.updateNotebookAffinity", TraceOptions.Arguments | TraceOptions.BeforeCall | TraceOptions.ReturnValue)
     public async updateNotebookAffinity(notebook: NotebookDocument, affinity: NotebookControllerAffinity) {
         traceInfo(`Setting controller affinity for ${getDisplayPath(notebook.uri)} ${this.id}`);
         this.controller.updateNotebookAffinity(notebook, affinity);
