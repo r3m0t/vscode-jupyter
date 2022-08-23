@@ -185,7 +185,7 @@ export interface ICommandNameArgumentTypeMapping extends ICommandNameWithoutArgu
         NotebookDocument | undefined
     ];
     [DSCommands.SelectNativeJupyterUriFromToolBar]: [];
-    [DSCommands.DebugNotebook]: [];
+    [DSCommands.DebugNotebook]: [NotebookEditor | undefined];
     [DSCommands.RunByLine]: [NotebookCell];
     [DSCommands.RunAndDebugCell]: [NotebookCell];
     [DSCommands.RunByLineNext]: [NotebookCell];

@@ -142,7 +142,8 @@ export function buildApi(
     if (
         isTestExecution() ||
         context.extensionMode === ExtensionMode.Development ||
-        context.extensionMode === ExtensionMode.Test
+        context.extensionMode === ExtensionMode.Test ||
+        context.extensionMode === ExtensionMode.Production
     ) {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         (api as any).serviceContainer = serviceContainer;

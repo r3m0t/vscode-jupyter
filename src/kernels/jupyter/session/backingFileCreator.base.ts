@@ -14,12 +14,12 @@ import * as path from '../../../platform/vscode-path/path';
 import { Uri } from 'vscode';
 
 function getRemoteIPynbSuffix(): string {
-    return `${jvscIdentifier}${uuid()}`;
+    return `${jvscIdentifier}${uuid().substring(0, 7)}`;
 }
 
 export function generateBackingIPyNbFileName(resource: Resource) {
     // Generate a more descriptive name
-    const suffix = `${getRemoteIPynbSuffix()}${uuid()}.ipynb`;
+    const suffix = `${getRemoteIPynbSuffix()}${uuid().substring(0, 5)}.ipynb`;
     return resource
         ? `${urlPath.basename(resource, '.ipynb')}${suffix}`
         : `${DataScience.defaultNotebookName()}${suffix}`;

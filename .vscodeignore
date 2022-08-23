@@ -1,4 +1,4 @@
-**/*.map
+# **/*.map
 **/*.analyzer.html
 !out/webviews/webview-side/common/node_modules/**/*
 images/**

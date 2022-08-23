@@ -188,7 +188,7 @@ function buildConfiguration(bundle) {
             publicPath: 'built/'
         },
         mode: isProdBuild ? 'production' : 'development', // Leave as is, we'll need to see stack traces when there are errors.
-        devtool: isProdBuild ? undefined : 'inline-source-map',
+        devtool: 'source-map',
         optimization: undefined,
         plugins,
         externals: ['log4js'],
