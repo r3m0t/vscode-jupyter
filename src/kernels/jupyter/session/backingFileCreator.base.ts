@@ -14,16 +14,17 @@ import * as path from '../../../platform/vscode-path/path';
 import { Uri } from 'vscode';
 
 function getRemoteIPynbSuffix(): string {
-    return `${jvscIdentifier}${uuid().substring(0, 7)}`;
+    return `${jvscIdentifier}${uuid().substring(0, 4)}`;
 }
 
 export function generateBackingIPyNbFileName(resource: Resource) {
     // Generate a more descriptive name
-    const suffix = `${getRemoteIPynbSuffix()}${uuid().substring(0, 5)}.ipynb`;
+    const suffix = `${getRemoteIPynbSuffix()}${uuid().substring(0, 3)}.ipynb`;
     return resource
         ? `${urlPath.basename(resource, '.ipynb')}${suffix}`
         : `${DataScience.defaultNotebookName()}${suffix}`;
 }
+
 export class BaseBackingFileCreator implements IJupyterBackingFileCreator {
     public async createBackingFile(
         resource: Resource,
