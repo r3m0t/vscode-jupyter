@@ -164,7 +164,12 @@
             },
             {
                 "key": "shift+enter",
-                "when": "resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
+                "when": "jupyterfork.shiftenter && resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
+                "command": "interactive.execute"
+            },
+            {
+                "key": "enter",
+                "when": "!jupyterfork.shiftenter && resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
                 "command": "interactive.execute"
             },
             {
