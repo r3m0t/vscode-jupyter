@@ -164,7 +164,12 @@
             },
             {
                 "key": "shift+enter",
-                "when": "resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
+                "when": "!jupyterfork.enter && resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
+                "command": "interactive.execute"
+            },
+            {
+                "key": "enter",
+                "when": "jupyterfork.enter && resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
                 "command": "interactive.execute"
             },
             {
@@ -2161,8 +2166,8 @@
         "clean": "gulp clean",
         "updateBuildNumber": "gulp updateBuildNumber",
         "webpack": "webpack",
-        "download-api": "vscode-dts dev",
-        "postdownload-api": "vscode-dts main",
+        "download-api": "vscode-dts dev 1.71.2",
+        "postdownload-api": "vscode-dts 1.71.2",
         "generateTelemetry": "gulp generateTelemetryMd",
         "openInBrowser": "vscode-test-web --extensionDevelopmentPath=. ./src/test/datascience",
         "startJupyterServer": "node build/preDebugWebTest.js",
