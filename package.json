@@ -1,7 +1,7 @@
 {
     "name": "jupyter",
     "displayName": "Jupyter",
-    "version": "2023.1.200",
+    "version": "8023.1.201",
     "description": "Jupyter notebook support, interactive programming and computing that supports Intellisense, debugging and more.",
     "publisher": "ms-toolsai",
     "author": {
@@ -163,7 +163,12 @@
             },
             {
                 "key": "shift+enter",
-                "when": "resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
+                "when": "!jupyterfork.enter && resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
+                "command": "interactive.execute"
+            },
+            {
+                "key": "enter",
+                "when": "jupyterfork.enter && resourceScheme == 'vscode-interactive' && notebookKernel =~ /^ms-toolsai.jupyter\\// || resourceScheme == 'vscode-interactive' && !notebookKernel",
                 "command": "interactive.execute"
             },
             {
@@ -866,23 +871,23 @@
                 },
                 {
                     "command": "jupyter.runFileInteractive",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@1",
+                    "when": "jupyterfork.editorcontext1 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 },
                 {
                     "command": "jupyter.runfromline",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@2",
+                    "when": "jupyterfork.editorcontext2 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 },
                 {
                     "command": "jupyter.runtoline",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@3",
+                    "when": "jupyterfork.editorcontext3 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 },
                 {
                     "command": "jupyter.execSelectionInteractive",
                     "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "when": "jupyterfork.editorcontext4 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 }
             ],
             "editor/title": [
@@ -2041,8 +2046,8 @@
         "clean": "gulp clean",
         "updateBuildNumber": "gulp updateBuildNumber",
         "webpack": "webpack",
-        "download-api": "vscode-dts dev",
-        "postdownload-api": "vscode-dts main",
+        "download-api": "vscode-dts dev 1.75.0",
+        "postdownload-api": "vscode-dts 1.75.0",
         "generateTelemetry": "gulp generateTelemetry",
         "openInBrowser": "vscode-test-web --extensionDevelopmentPath=. ./src/test/datascience",
         "startJupyterServer": "node build/preDebugWebTest.js",

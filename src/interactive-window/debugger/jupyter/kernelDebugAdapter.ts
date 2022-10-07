@@ -11,7 +11,7 @@ import { IDebugLocationTrackerFactory, IDumpCellResponse } from '../../../notebo
 import { KernelDebugAdapterBase } from '../../../notebooks/debugger/kernelDebugAdapterBase';
 import { IDebugService } from '../../../platform/common/application/types';
 import { IPlatformService } from '../../../platform/common/platform/types';
-import { traceError, traceInfoIfCI } from '../../../platform/logging';
+import { traceError, traceInfo, traceInfoIfCI } from '../../../platform/logging';
 import * as path from '../../../platform/vscode-path/path';
 import { InteractiveCellMetadata } from '../../editor-integration/types';
 /**
@@ -82,7 +82,8 @@ export class KernelDebugAdapter extends KernelDebugAdapterBase {
         const cell = this.notebookDocument.cellAt(index);
         const metadata = getInteractiveCellMetadata(cell);
         if (!metadata) {
-            throw new Error('Not an interactive window cell');
+            traceInfo('dumpCell- suppressing Error: Not an interactive window cell');
+            return;
         }
         try {
             const code = (metadata.generatedCode?.code || cell.document.getText()).replace(/\r\n/g, '\n');
