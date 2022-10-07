@@ -90,10 +90,13 @@ export class DebuggingManager
             debug.registerDebugAdapterDescriptorFactory(pythonKernelDebugAdapter, {
                 createDebugAdapterDescriptor: async (session) => this.createDebugAdapterDescriptor(session)
             }),
-            this.commandManager.registerCommand(DSCommands.DebugNotebook, async () => {
-                const editor = this.vscNotebook.activeNotebookEditor;
-                await this.tryToStartDebugging(KernelDebugMode.Everything, editor);
-            }),
+            this.commandManager.registerCommand(
+                DSCommands.DebugNotebook,
+                async (editor: NotebookEditor | undefined) => {
+                    if (editor === undefined) editor = this.vscNotebook.activeNotebookEditor;
+                    await this.tryToStartDebugging(KernelDebugMode.Everything, editor);
+                }
+            ),
 
             this.commandManager.registerCommand(DSCommands.RunByLine, async (cell: NotebookCell | undefined) => {
                 sendTelemetryEvent(DebuggingTelemetry.clickedRunByLine);
