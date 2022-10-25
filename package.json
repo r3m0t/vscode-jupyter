@@ -882,23 +882,23 @@
                 },
                 {
                     "command": "jupyter.runFileInteractive",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@1",
+                    "when": "jupyterfork.editorcontext1 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 },
                 {
                     "command": "jupyter.runfromline",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@2",
+                    "when": "jupyterfork.editorcontext2 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 },
                 {
                     "command": "jupyter.runtoline",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@3",
+                    "when": "jupyterfork.editorcontext3 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
                 },
                 {
                     "command": "jupyter.execSelectionInteractive",
-                    "group": "Jupyter2",
-                    "when": "editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted"
+                    "group": "Jupyter2@4",
+                    "when": "jupyterfork.editorcontext4 && editorFocus && editorLangId == python && !notebookEditorFocused && isWorkspaceTrusted && editorHasSelection && !editorHasMultipleSelections"
                 },
                 {
                     "when": "editorFocus && editorLangId == python && resourceLangId == jupyter && !notebookEditorFocused && isWorkspaceTrusted",
