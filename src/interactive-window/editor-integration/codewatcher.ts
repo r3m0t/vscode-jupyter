@@ -30,7 +30,7 @@ import { Telemetry, Commands, Identifiers } from '../../platform/common/constant
 import { IInteractiveWindowProvider, IInteractiveWindow } from '../types';
 import { CellMatcher } from './cellMatcher';
 import { ICodeWatcher, ICodeLensFactory } from './types';
-import { traceDecoratorVerbose } from '../../platform/logging';
+import { traceDecoratorVerbose, traceWarning } from '../../platform/logging';
 import { TraceOptions } from '../../platform/logging/types';
 import * as urlPath from '../../platform/vscode-path/resources';
 import { IDataScienceErrorHandler } from '../../kernels/errors/types';
@@ -251,24 +251,39 @@ export class CodeWatcher implements ICodeWatcher {
     }
 
     @captureTelemetry(Telemetry.RunSelectionOrLine)
-    public async runSelectionOrLine(activeEditor: TextEditor | undefined, text?: string | Uri) {
+    public async runSelectionOrLine(
+        activeEditor: TextEditor | undefined,
+        text?: string | Uri | { code: string; normalize?: boolean }
+    ) {
         if (this.document && activeEditor && urlPath.isEqual(activeEditor.document.uri, this.document.uri)) {
             const iw = await this.getActiveInteractiveWindow();
             let codeToExecute: string | undefined;
+            let normalize = true;
             if (text === undefined || isUri(text)) {
                 // Get just the text of the selection or the current line if none
                 codeToExecute = this.executionHelper.getSelectedTextToExecute(activeEditor);
+            } else if (typeof text === 'object') {
+                codeToExecute = text.code;
+                normalize = text.normalize ?? true;
             } else {
                 codeToExecute = text;
             }
             if (!codeToExecute) {
+                traceWarning('runSelectionOrLine: dropping: !codeToExecute');
                 return;
             }
-            const normalizedCode = await this.executionHelper.normalizeLines(codeToExecute!);
+            const normalizedCode = normalize ? await this.executionHelper.normalizeLines(codeToExecute) : codeToExecute;
             if (!normalizedCode || normalizedCode.trim().length === 0) {
+                traceWarning('runSelectionOrLine: dropping: !normalizedCode');
                 return;
             }
             await this.addCode(iw, normalizedCode, this.document.uri, activeEditor.selection.start.line);
+        } else if (!this.document) {
+            traceWarning('runSelectionOrLine: dropping: !this.document');
+        } else if (!activeEditor) {
+            traceWarning('runSelectionOrLine: dropping: !activeEditor');
+        } else {
+            traceWarning('runSelectionOrLine: dropping: uri', activeEditor.document.uri, this.document.uri);
         }
     }
 
