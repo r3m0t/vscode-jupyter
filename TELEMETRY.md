@@ -329,6 +329,30 @@ No properties for event
             return;
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        return this.codeLenses;
+    }
+
+    @captureUsageTelemetry(Telemetry.DebugCurrentCell)
+    public async debugCurrentCell() {
+        if (!this.documentManager.activeTextEditor || !this.documentManager.activeTextEditor.document) {
+            return;
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        return this.runMatchingCell(range, advance);
+    }
+
+    @captureUsageTelemetry(Telemetry.DebugCurrentCell)
+    public async debugCell(range: Range): Promise<void> {
+        if (!this.documentManager.activeTextEditor || !this.documentManager.activeTextEditor.document) {
+            return;
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.DEBUG_FILE_INTERACTIVE</summary>
@@ -354,6 +378,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.DebugFileInteractive)
+    public async debugFileInteractive() {
+        return this.runFileInteractiveInternal(true);
+    }
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        return this.runFileInteractiveInternal(false);
+    }
+
+    @captureUsageTelemetry(Telemetry.DebugFileInteractive)
     public async debugFileInteractive() {
         return this.runFileInteractiveInternal(true);
     }
@@ -494,7 +530,7 @@ No properties for event
 
 [src/notebooks/debugger/debuggingManager.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/notebooks/debugger/debuggingManager.ts)
 ```typescript
-            }),
+            ),
 
             this.commandManager.registerCommand(DSCommands.RunByLine, async (cell: NotebookCell | undefined) => {
                 sendTelemetryEvent(DebuggingTelemetry.clickedRunByLine);
@@ -1399,6 +1435,18 @@ No properties for event
         if (!editor || !editor.selection) {
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        });
+    }
+
+    @capturePerfTelemetry(Telemetry.GotoNextCellInFile)
+    public gotoNextCell() {
+        const editor = this.documentManager.activeTextEditor;
+        if (!editor || !editor.selection) {
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.GOTO_PREV_CELL_IN_FILE</summary>
@@ -1422,6 +1470,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.GotoPrevCellInFile)
+    public gotoPreviousCell() {
+        const editor = this.documentManager.activeTextEditor;
+        if (!editor || !editor.selection) {
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.GotoPrevCellInFile)
     public gotoPreviousCell() {
         const editor = this.documentManager.activeTextEditor;
         if (!editor || !editor.selection) {
@@ -3443,6 +3503,18 @@ No properties for event
         const runCellCommands = this.codeLenses.filter(
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        this.closeDocumentDisposable?.dispose(); // NOSONAR
+        this.updateRequiredDisposable?.dispose(); // NOSONAR
+    }
+    @captureUsageTelemetry(Telemetry.RunAllCells)
+    public async runAllCells() {
+        const iw = await this.getActiveInteractiveWindow();
+        const runCellCommands = this.codeLenses.filter(
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_ALL_CELLS_ABOVE</summary>
@@ -3468,6 +3540,18 @@ No properties for event
 
     // Run all cells up to the cell containing this start line and character
     @captureTelemetry(Telemetry.RunAllCellsAbove)
+    public async runAllCellsAbove(stopLine: number, stopCharacter: number) {
+        const iw = await this.getActiveInteractiveWindow();
+        const runCellCommands = this.codeLenses.filter((c) => c.command && c.command.command === Commands.RunCell);
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+    }
+
+    // Run all cells up to the cell containing this start line and character
+    @captureUsageTelemetry(Telemetry.RunAllCellsAbove)
     public async runAllCellsAbove(stopLine: number, stopCharacter: number) {
         const iw = await this.getActiveInteractiveWindow();
         const runCellCommands = this.codeLenses.filter((c) => c.command && c.command.command === Commands.RunCell);
@@ -3610,6 +3694,18 @@ No properties for event
         const runCellCommands = this.codeLenses.filter((c) => c.command && c.command.command === Commands.RunCell);
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        await finished;
+    }
+
+    @captureUsageTelemetry(Telemetry.RunCellAndAllBelow)
+    public async runCellAndAllBelow(startLine: number, startCharacter: number) {
+        const iw = await this.getActiveInteractiveWindow();
+        const runCellCommands = this.codeLenses.filter((c) => c.command && c.command.command === Commands.RunCell);
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_CHANGE_CELL_TO_CODE</summary>
@@ -3638,6 +3734,18 @@ No properties for event
             return this.changeCellTo(editor, cell, 'code');
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        });
+    }
+
+    @capturePerfTelemetry(Telemetry.ChangeCellToCode)
+    public changeCellToCode() {
+        this.applyToCells((editor, cell, _) => {
+            return this.changeCellTo(editor, cell, 'code');
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_CHANGE_CELL_TO_MARKDOWN</summary>
@@ -3661,6 +3769,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.ChangeCellToMarkdown)
+    public changeCellToMarkdown() {
+        this.applyToCells((editor, cell, _) => {
+            return this.changeCellTo(editor, cell, 'markdown');
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        await this.moveCellsDirection(false);
+    }
+
+    @capturePerfTelemetry(Telemetry.ChangeCellToMarkdown)
     public changeCellToMarkdown() {
         this.applyToCells((editor, cell, _) => {
             return this.changeCellTo(editor, cell, 'markdown');
@@ -3696,6 +3816,18 @@ No properties for event
             return;
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        return this.runMatchingCell(range, false, true);
+    }
+
+    @captureUsageTelemetry(Telemetry.RunCurrentCell)
+    public async runCurrentCell(): Promise<void> {
+        if (!this.documentManager.activeTextEditor || !this.documentManager.activeTextEditor.document) {
+            return;
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_CURRENT_CELL_AND_ADD_BELOW</summary>
@@ -3719,6 +3851,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.RunCurrentCellAndAddBelow)
+    public async runCurrentCellAndAddBelow(): Promise<void> {
+        if (!this.documentManager.activeTextEditor || !this.documentManager.activeTextEditor.document) {
+            return;
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.RunCurrentCellAndAddBelow)
     public async runCurrentCellAndAddBelow(): Promise<void> {
         if (!this.documentManager.activeTextEditor || !this.documentManager.activeTextEditor.document) {
             return;
@@ -3754,6 +3898,18 @@ No properties for event
             return;
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        return this.runMatchingCell(this.documentManager.activeTextEditor.selection, false);
+    }
+
+    @captureUsageTelemetry(Telemetry.RunCurrentCellAndAdvance)
+    public async runCurrentCellAndAdvance() {
+        if (!this.documentManager.activeTextEditor || !this.documentManager.activeTextEditor.document) {
+            return;
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_DELETE_CELLS</summary>
@@ -3777,6 +3933,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.DeleteCells)
+    public deleteCells() {
+        const editor = this.documentManager.activeTextEditor;
+        if (!editor || !editor.selection) {
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.DeleteCells)
     public deleteCells() {
         const editor = this.documentManager.activeTextEditor;
         if (!editor || !editor.selection) {
@@ -3810,6 +3978,18 @@ No properties for event
         // The direction of the selection matters (i.e. where the active cursor)
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        editor.selections = selections;
+    }
+
+    @capturePerfTelemetry(Telemetry.ExtendSelectionByCellAbove)
+    public extendSelectionByCellAbove() {
+        // This behaves similarly to excel "Extend Selection by One Cell Above".
+        // The direction of the selection matters (i.e. where the active cursor)
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_EXTEND_SELECTION_BY_CELL_BELOW</summary>
@@ -3833,6 +4013,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.ExtendSelectionByCellBelow)
+    public extendSelectionByCellBelow() {
+        // This behaves similarly to excel "Extend Selection by One Cell Above".
+        // The direction of the selection matters (i.e. where the active cursor)
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.ExtendSelectionByCellBelow)
     public extendSelectionByCellBelow() {
         // This behaves similarly to excel "Extend Selection by One Cell Above".
         // The direction of the selection matters (i.e. where the active cursor)
@@ -3863,6 +4055,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.RunFileInteractive)
+    public async runFileInteractive() {
+        return this.runFileInteractiveInternal(false);
+    }
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @captureUsageTelemetry(Telemetry.RunFileInteractive)
     public async runFileInteractive() {
         return this.runFileInteractiveInternal(false);
     }
@@ -3908,6 +4112,18 @@ No properties for event
             const iw = await this.getActiveInteractiveWindow();
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @captureUsageTelemetry(Telemetry.RunFromLine)
+    public async runFromLine(targetLine: number) {
+        if (this.document && targetLine < this.document.lineCount) {
+            const iw = await this.getActiveInteractiveWindow();
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_INSERT_CELL_ABOVE</summary>
@@ -3936,6 +4152,18 @@ No properties for event
         if (editor && editor.selection) {
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.InsertCellAbove)
+    public insertCellAbove() {
+        const editor = this.documentManager.activeTextEditor;
+        if (editor && editor.selection) {
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_INSERT_CELL_BELOW</summary>
@@ -3959,6 +4187,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.InsertCellBelow)
+    public insertCellBelow() {
+        const editor = this.documentManager.activeTextEditor;
+        if (editor && editor.selection) {
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.InsertCellBelow)
     public insertCellBelow() {
         const editor = this.documentManager.activeTextEditor;
         if (editor && editor.selection) {
@@ -3994,6 +4234,18 @@ No properties for event
         if (editor && editor.selection) {
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        );
+    }
+
+    @capturePerfTelemetry(Telemetry.InsertCellBelowPosition)
+    public insertCellBelowPosition() {
+        const editor = this.documentManager.activeTextEditor;
+        if (editor && editor.selection) {
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_MOVE_CELLS_DOWN</summary>
@@ -4017,6 +4269,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.MoveCellsDown)
+    public async moveCellsDown(): Promise<void> {
+        await this.moveCellsDirection(false);
+    }
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        await this.moveCellsDirection(true);
+    }
+
+    @capturePerfTelemetry(Telemetry.MoveCellsDown)
     public async moveCellsDown(): Promise<void> {
         await this.moveCellsDirection(false);
     }
@@ -4050,6 +4314,18 @@ No properties for event
     }
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.MoveCellsUp)
+    public async moveCellsUp(): Promise<void> {
+        await this.moveCellsDirection(true);
+    }
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_SELECT_CELL</summary>
@@ -4073,6 +4349,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.SelectCell)
+    public selectCell() {
+        const editor = this.documentManager.activeTextEditor;
+        if (editor && editor.selection) {
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+            .then(noop, noop);
+    }
+
+    @capturePerfTelemetry(Telemetry.SelectCell)
     public selectCell() {
         const editor = this.documentManager.activeTextEditor;
         if (editor && editor.selection) {
@@ -4106,6 +4394,18 @@ No properties for event
         if (!editor || !editor.selection) {
 ```
 
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @capturePerfTelemetry(Telemetry.SelectCellContents)
+    public selectCellContents() {
+        const editor = this.documentManager.activeTextEditor;
+        if (!editor || !editor.selection) {
+```
+
 </details>
 <details>
   <summary>DATASCIENCE.RUN_SELECTION_OR_LINE</summary>
@@ -4131,9 +4431,21 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.RunSelectionOrLine)
+    public async runSelectionOrLine(
+        activeEditor: TextEditor | undefined,
+        text?: string | Uri | { code: string; normalize?: boolean }
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+    }
+
+<<<<<<< Updated upstream
+    @captureUsageTelemetry(Telemetry.RunSelectionOrLine)
     public async runSelectionOrLine(activeEditor: TextEditor | undefined, text?: string | Uri) {
-        if (this.document && activeEditor && urlPath.isEqual(activeEditor.document.uri, this.document.uri)) {
-            const iw = await this.getActiveInteractiveWindow();
+||||||| Stash base
+    @captureTelemetry(Telemetry.RunSelectionOrLine)
 ```
 
 </details>
@@ -4159,6 +4471,18 @@ No properties for event
     }
 
     @captureTelemetry(Telemetry.RunToLine)
+    public async runToLine(targetLine: number) {
+        if (this.document && targetLine > 0) {
+            const iw = await this.getActiveInteractiveWindow();
+```
+
+
+[src/interactive-window/editor-integration/_codewatcher_mine.ts](https://github.com/microsoft/vscode-jupyter/tree/main/src/interactive-window/editor-integration/_codewatcher_mine.ts)
+```typescript
+        }
+    }
+
+    @captureUsageTelemetry(Telemetry.RunToLine)
     public async runToLine(targetLine: number) {
         if (this.document && targetLine > 0) {
             const iw = await this.getActiveInteractiveWindow();

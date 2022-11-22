@@ -154,7 +154,7 @@ export class RemoteKernelFinder implements IRemoteKernelFinder, IExtensionSingle
                     updateCache = true;
                 }
             } catch (ex) {
-                traceError(`Exception loading kernels: ${ex}`);
+                traceError(`Exception loading remote kernels: ${ex} (${ex.stack})`, ex);
             }
         }
 

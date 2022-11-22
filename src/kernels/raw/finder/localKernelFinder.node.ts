@@ -59,6 +59,9 @@ export class LocalKernelFinder implements ILocalKernelFinder, IExtensionSingleAc
         cancelToken: CancellationToken | undefined,
         useCache: 'ignoreCache' | 'useCache'
     ): Promise<KernelConnectionMetadata[]> {
+        if (process.env.NO_LOCAL_KERNELS === '1') {
+            return [];
+        }
         const kernels: KernelConnectionMetadata[] = await this.listKernelsImpl(resource, cancelToken, useCache).catch(
             (ex) => {
                 // Sometimes we can get errors from the socket level or jupyter, with the message 'Canceled', lets ignore those
@@ -123,7 +126,7 @@ export class LocalKernelFinder implements ILocalKernelFinder, IExtensionSingleAc
                     updateCache = true;
                 }
             } catch (ex) {
-                traceError(`Exception loading kernels: ${ex}`);
+                traceError(`Exception loading local kernels: ${ex} (${ex.stack})`, ex);
             }
         }
 
@@ -188,6 +191,9 @@ export class LocalKernelFinder implements ILocalKernelFinder, IExtensionSingleAc
         resource: Resource,
         @ignoreLogging() cancelToken?: CancellationToken
     ): Promise<LocalKernelConnectionMetadata[]> {
+        if (process.env.NO_LOCAL_KERNELS === '1') {
+            return [];
+        }
         let [nonPythonKernelSpecs, pythonRelatedKernelSpecs] = await Promise.all([
             this.nonPythonKernelFinder.listKernelSpecs(false, cancelToken),
             this.pythonKernelFinder.listKernelSpecs(resource, true, cancelToken)
@@ -197,6 +203,9 @@ export class LocalKernelFinder implements ILocalKernelFinder, IExtensionSingleAc
     }
 
     private filterKernels(kernels: LocalKernelConnectionMetadata[]) {
+        if (process.env.NO_LOCAL_KERNELS === '1') {
+            return [];
+        }
         return kernels.filter(({ kernelSpec }) => {
             if (!kernelSpec) {
                 return true;
@@ -228,6 +237,9 @@ export class LocalKernelFinder implements ILocalKernelFinder, IExtensionSingleAc
     }
 
     private async isValidCachedKernel(kernel: LocalKernelConnectionMetadata): Promise<boolean> {
+        if (process.env.NO_LOCAL_KERNELS === '1') {
+            return false;
+        }
         switch (kernel.kind) {
             case 'startUsingPythonInterpreter':
                 // Interpreters have to still exist
